@@ -1,3 +1,63 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.bg{
+    background-image: url(/1.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.bg1{
+    background-image: url(/2.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.bg2{
+    background-image: url(/3.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.bg3{
+    background-image: url(/4.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.bg4{
+    background-image: url(/5.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.bg5{
+    background-image: url(/6.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.bg6{
+    background-image: url(/7.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.bg7{
+    background-image: url(/8.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.bg8{
+    background-image: url(/9.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.bg9{
+    background-image: url(/10.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.bg10{
+    background-image: url(/11.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.bg11{
+    background-image: url(/12.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
