@@ -1,0 +1,6 @@
+define(['jquery','ko','pageLoader'],function($,ko,pageLoader){'use strict'
+return{filter:function(url,isActive){pageLoader.showLoading();$.get({url:url,cache:true}).always(function(){pageLoader.hideLoading()}).done(function(response){this.updateUrl(url)
+response.isActive=isActive
+$(document).triggerHandler('layer:update',response)
+$(document).triggerHandler('catalog:update',response)}.bind(this)).fail(function(){})},updateUrl:function(url){if(!url){return}
+if('pushState'in history){history.replaceState('','',url)}}}})

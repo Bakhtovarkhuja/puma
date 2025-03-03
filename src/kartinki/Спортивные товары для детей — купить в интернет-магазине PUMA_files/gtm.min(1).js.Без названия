@@ -1,0 +1,10 @@
+define(['uiComponent','uiRegistry','jquery','Magento_Customer/js/customer-data'],function(Component,registry,$,customerData,){return Component.extend({defaults:{data:{},tracks:{data:true},statefull:{data:true}},initialize:function(){this._super()
+this._parent=registry.get(this.parentName)
+this.customer=customerData.get('customer')()
+this.events()
+if(document.referrer.match('checkout')){this.data=$.extend({},this.data,{eventLabel:'checkout'})}else if(!document.referrer.length){this.data=$.extend({},this.data,{eventLabel:'direct'})}
+if(this.isAccount){this.push(this.data)
+this.data={}}else if(window.isLoggedIn&&this.isCheckout){this.push(this.data)
+this.data={}}},events:function(){$(document).on('submit.'+this.name,'form[action*="'+this.loginUrl+'"]',this.onLogin.bind(this)).on('submit.'+this.name,'form[action*="'+this.createUrl+'"]',this.onCreate.bind(this)).on('click.'+this.name,this.getSelectors(),this.onClick.bind(this))},onLogin:function(){this.data=$.extend({},this.data,{event:'autorization',eventCategory:'autorization',eventAction:'success'})
+if(this.isCheckout){this.data=$.extend({},this.data,{eventLabel:'checkout'})}},onCreate:function(){this.data=$.extend({},this.data,{event:'registration',eventCategory:'registration',eventAction:'success'})},onClick:function(){this.data=$.extend({},this.data,{eventLabel:'header'})},push:function(data){window.dataLayer=window.dataLayer||[]
+window.dataLayer.push(data)},getSelectors:function(){return this._parent&&this._parent.eventMapper.auth_click}})})

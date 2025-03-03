@@ -1,0 +1,3 @@
+define(['uiComponent'],function(Component){'use strict'
+return Component.extend({onContactFormSubmit:function(){this.push({type:'form',name:'form submitted',attributes:'contact form'})},onVacancyFormSubmit:function(){this.push({type:'form',name:'form submitted',attributes:'vacancy form'})},push:function(event){if(window.pageData.event===undefined){window.pageData.event=[]}
+window.pageData.event.push(event)}})})

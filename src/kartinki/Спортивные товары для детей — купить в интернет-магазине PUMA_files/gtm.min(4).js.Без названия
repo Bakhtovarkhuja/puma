@@ -1,0 +1,8 @@
+define(['uiComponent','uiRegistry','jquery'],function(Component,registry,$){return Component.extend({initialize:function(){this._super()
+this._parent=registry.get(this.parentName)
+this.events()},events:function(){const selectors=this.getSelectors()
+if(selectors){$(document).on('click.'+this.name,selectors,this.onClick.bind(this))}},onClick:function(ev){const $el=$(ev.currentTarget)
+const label=$el.data('analytics-label')
+const eventData={event:'event',eventCategory:'social',eventAction:'click',eventLabel:label}
+this.push(eventData)},push:function(data){window.dataLayer=window.dataLayer||[]
+window.dataLayer.push(data)},getSelectors:function(){return this._parent&&this._parent.eventMapper.social_click}})})

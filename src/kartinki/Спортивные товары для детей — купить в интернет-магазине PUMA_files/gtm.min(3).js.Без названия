@@ -1,0 +1,9 @@
+define(['uiComponent','jquery','mage/cookies'],function(Component,$){'use strict'
+const ADD_TO_CART_COOKIE='gtm_add_to_cart'
+const ADD_TO_CART_REMARKETING_COOKIE='gtm_add_to_cart_remarketing'
+const REMOVE_FROM_CART_COOKIE='gtm_remove_from_cart'
+return Component.extend({initialize:function(){this._super();this.trackAssigned();},trackAssigned:function(){if(this.track){window.dataLayer=window.dataLayer||[];this.track.forEach(function(trackData){window.dataLayer.push(trackData);});}},onAddToCart:function(){this.changeHandler(ADD_TO_CART_COOKIE)
+this.changeHandler(ADD_TO_CART_REMARKETING_COOKIE)},onRemoveFromCart:function(){this.changeHandler(REMOVE_FROM_CART_COOKIE)},changeHandler:function(cookieName){const data=decodeURIComponent($.mage.cookies.get(cookieName))
+if(data!==null){this.push(JSON.parse(data))
+$.mage.cookies.clear(cookieName)}},push:function(data){window.dataLayer=window.dataLayer||[]
+window.dataLayer.push(data)}})})

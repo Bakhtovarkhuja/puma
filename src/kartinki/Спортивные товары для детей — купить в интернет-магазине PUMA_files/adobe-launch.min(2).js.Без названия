@@ -1,0 +1,3 @@
+define(['uiComponent'],function(Component){'use strict'
+return Component.extend({onCreateAccount:function(){this.push({type:'account',name:'new account created'})},onCustomerLogin:function(){this.push({type:'login',name:'user logged in'})},onCustomerLogout:function(){this.push({type:'login',name:'user logged out'})},push:function(event){if(window.pageData.event===undefined){window.pageData.event=[]}
+window.pageData.event.push(event)}})})

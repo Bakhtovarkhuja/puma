@@ -1,0 +1,9 @@
+define(['uiComponent','uiRegistry','Magento_Ui/js/lib/core/storage/local','underscore','jquery'],function(Component,registry,storage,_,$){return Component.extend({defaults:{imports:{onImpressionUpdated:'${ $.productImpressionProvider }:${ $.productImpressionProperty }'}},onProductItemClick:function(data){const parent=registry.get(this.parentName)
+const mapper=parent.objectMapper.gtm
+const lazyData={event:'ecommerce',eventCategory:'Ecommerce',eventAction:'Product Click',ecommerce:{click:{products:[],actionField:{list:data.category}}}}
+if(mapper!==undefined&&mapper.product){const product={}
+_.each(mapper.product,function(val,key){product[$.trim(val)]=data[key]})
+lazyData.ecommerce.click.products.push(product)}
+storage.set('analytics.gtm',lazyData)},onImpressionUpdated:function(data){var parent=registry.get(this.parentName)
+if(!_.isObject(data)||!Object.keys(data).length){return}
+_.each(data.trackers_data,function(tracker){parent.trackers.push(tracker)}.bind(this))}})})

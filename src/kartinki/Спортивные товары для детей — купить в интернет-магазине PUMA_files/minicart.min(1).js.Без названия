@@ -1,0 +1,38 @@
+define(['uiComponent','Magento_Customer/js/customer-data','jquery','ko','underscore','sidebar','mage/translate','mage/dropdown'],function(Component,customerData,$,ko,_){'use strict'
+var sidebarInitialized=false,addToCartCalls=0,miniCart,$html=$('html')
+miniCart=$('[data-block="minicart"]')
+function initSidebar(){if(miniCart.data('mageSidebar')){miniCart.sidebar('update')}
+if(!$('[data-role=product-item]').length){$('#btn-minicart-close').on('click',function(){$('#minicartBlock').dropdownDialog('close')})
+return false}
+miniCart.trigger('contentUpdated')
+if(sidebarInitialized){return false}
+sidebarInitialized=true}
+function calculateMinicartOffset(){var $minicartBlock=$('[data-block="minicart"]'),$minicartContent=$('#minicartContent'),$minicartTitle=$('#minicartTitle'),minicartTitleHeight=$('#minicartTitle').innerHeight()+30,minicartSubtotalHeight=$('#minicartSubtotal').innerHeight(),offset=Math.abs($(window).scrollTop()-($minicartTitle?.offset()?.top||0))*2,contentHeight=$(window).innerHeight()-offset-minicartSubtotalHeight-minicartTitleHeight
+$minicartContent.css('max-height',contentHeight+'px')
+$minicartBlock.height($(window).innerHeight()-offset)}
+miniCart.on('dropdowndialogopen',function(){if(!$('body').hasClass('desktop')){$html.removeClass('_open-minicart')
+window.location.href=$('#minicartLink').attr('href')}else{initSidebar()
+calculateMinicartOffset()
+$html.addClass('_open-minicart')}}).on('dropdowndialogclose',function(){$html.removeClass('_open-minicart')})
+$('body').on('resize-body',function(){calculateMinicartOffset()}).on('change-state',function(){$('#minicartBlock').dropdownDialog('close')
+$html.removeClass('_open-minicart')})
+$(document).on('sidebar-open',function(){setTimeout(calculateMinicartOffset,0)})
+return Component.extend({shoppingCartUrl:window.checkout.shoppingCartUrl,checkoutUrl:window.checkout.checkoutUrl,maxItemsToDisplay:window.checkout.maxItemsToDisplay,cart:{},initialize:function(){var self=this,cartData=customerData.get('cart')
+this.update(cartData())
+cartData.subscribe(function(updatedCart){addToCartCalls--
+this.isLoading(addToCartCalls>0)
+sidebarInitialized=false
+this.update(updatedCart)
+initSidebar()},this)
+$('[data-block="minicart"]').on('contentLoading',function(){addToCartCalls++
+self.isLoading(true)})
+if(cartData()['website_id']!==window.checkout.websiteId){customerData.reload(['cart'],false)}
+return this._super()},isLoading:ko.observable(false),initSidebar:initSidebar,closeMinicart:function(){$('[data-block="minicart"]').find('[data-role="dropdownDialog"]').dropdownDialog('close')},closeSidebar:function(){var minicart=$('[data-block="minicart"]')
+minicart.on('click','[data-action="close"]',function(event){event.stopPropagation()
+minicart.find('[data-role="dropdownDialog"]').dropdownDialog('close')})
+return true},getItemRenderer:function(productType){return this.itemRenderer[productType]||'defaultRenderer'},update:function(updatedCart){_.each(updatedCart,function(value,key){if(!this.cart.hasOwnProperty(key)){this.cart[key]=ko.observable()}
+this.cart[key](value)},this)},getCartParam:function(name){if(!_.isUndefined(name)){if(!this.cart.hasOwnProperty(name)){this.cart[name]=ko.observable()}}
+return this.cart[name]()},getCartItems:function(){var items=this.getCartParam('items')||[]
+items=items.slice(parseInt(-this.maxItemsToDisplay,10))
+return items},getCartLineItemsCount:function(){var items=this.getCartParam('items')||[]
+return parseInt(items.length,10)}})})
