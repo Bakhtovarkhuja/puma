@@ -69,4 +69,16 @@
     background-repeat: no-repeat;
     background-size: cover;
 }
-
+.bq{
+    background-image: url(/s-raspro/2880x700_109.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+s{
+    color: rgb(205, 62, 62);
+}
+.s{
+    background-image: url(/src/2880x700_6_2.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
