@@ -1,0 +1,37 @@
+define(['uiComponent','uiRegistry','jquery','Oggetto_GoogleTagManager/js/lib/intersection-observer'],function(Component,registry,$){return Component.extend({defaults:{cache:{},tracks:{cache:true},statefull:{cache:true}},initialize:function(){this._super()
+this._parent=registry.get(this.parentName)
+if(this._parent){this.events()
+this.initIntersectionObserver()
+if(this.getFromCache('promoClick')){this.push(this.getFromCache('promoClick'))
+this.cache=$.extend({},this.cache,{promoClick:{}})}}},events:function(){const selectors=this.getSelectors()
+if(selectors){$(document).on('click.'+this.name,selectors,this.onClick.bind(this))}},initIntersectionObserver:function(){var selectors,$elems
+function observe(target){const io=new IntersectionObserver(function(entries,io){entries.forEach(function(entry){if(!entry.isIntersecting){return}
+io.disconnect()
+this.onIntersection(entry,io)}.bind(this))}.bind(this))
+io.observe(target)}
+selectors=this.getSelectors()
+$elems=document.querySelectorAll(selectors)
+$elems.forEach(observe.bind(this))},onIntersection:function(entry){const $el=$(entry.target)
+if($el.parent().closest('[data-analytics-id]').length){return}
+const data=this.getPromotions($el)
+const promotions=data.promotions.length?data.promotions:[{name:data.name,position:data.position}]
+const eventData={event:'ecommerce',eventCategory:'Ecommerce',eventAction:'Promotion Impressions',ecommerce:{promoView:{promotions:promotions}}}
+if(!window.analyticsPageData.category){this.push(eventData)}else{if(Array.isArray(window.analyticsPageData.category.products)&&!window.analyticsPageData.category.products.length){this.push(eventData)}else if(data.position==='menu'){this.push(eventData)}}},onClick:function(ev){const $el=$(ev.currentTarget)
+const promotions=this.getPromotions($el)
+const name=promotions.name
+const position=promotions.position
+const eventData={event:'ecommerce',eventCategory:'Ecommerce',eventAction:'Promotion Click',ecommerce:{promoClick:{promotions:[{name:name,position:position}]}}}
+this.cache=$.extend({},this.cache,{promoClick:eventData})},push:function(data){window.dataLayer=window.dataLayer||[]
+window.dataLayer.push(data)},getPromotions:function($el){function getData($el){const name=$el.data('analytics-id')
+const position=$el.data('analytics-position')
+return{name:name,position:position}}
+const data=getData($el)
+const name=data.name
+const position=data.position
+const $childs=$el.find('[data-analytics-id]')
+const promotions=[]
+$childs.each(function(i,el){const data=getData($(el))
+data.id=name
+const isExist=promotions.find(function(promotion){return promotion.name===data.name;});if(isExist){return}
+promotions.push(data)})
+return{name:name,position:position,promotions:promotions}},getFromCache:function(key){return Object.keys(this.cache).length&&this.cache[key]},getSelectors:function(){return this._parent.eventMapper.banner_click}})})

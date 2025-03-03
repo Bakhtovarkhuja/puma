@@ -1,0 +1,3 @@
+define(['jquery','underscore','../subscription/provider'],function($,_,subscriptionProvider){'use strict';var config;return{startTracking:function(jsConfig){if(!window.pumastore){window.addEventListener('pumastoreReady',this.initTrackers);return;}
+config=jsConfig;},initTrackers:function(){let webComponentsEventBus=window.webComponentsEventBus||{};let subscription=subscriptionProvider.getProvider(config?.subscription?.provider);if(_.isEmpty(webComponentsEventBus)||!subscription){return;}
+webComponentsEventBus.addEventListener('newsletter-signup.open',function(event){if(subscription.isActive()){subscription.subscribe(event.detail.email,config);}});}};});

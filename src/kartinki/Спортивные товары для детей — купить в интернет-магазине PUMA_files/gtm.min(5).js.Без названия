@@ -1,0 +1,9 @@
+define(['uiComponent','uiRegistry','jquery','underscore'],function(Component,registry,$,_){return Component.extend({defaults:{data:{},trackableEvent:{}},initialize:function(){this._super()
+this._parent=registry.get(this.parentName)
+this.initEventListener()},initEventListener:function(){window.addEventListener("message",this.handleMessage.bind(this),false);},handleMessage:function(event){var message=this._extractMessage(event),eventName;if(message){eventName=this._extractEventName(message);}
+if(!message||!eventName){return;}
+if(!_.has(this.trackableEvent,eventName)){return;}
+this.processCallback(eventName,message);},processCallback:function(eventName,message){console.log(eventName,message.data);var eventConfig=this.trackableEvent[eventName];var callbackFunc=this[eventConfig['callback']];callbackFunc.apply(this,[eventConfig['data'],message]);},afterLoad:function(preservedEventData,message){var photoCount=message.data&&message.data.photoCount,data=$.extend({},_.clone(this.data),preservedEventData);data['eventLabel']=photoCount;this.push(data);},photoClick:function(preservedEventData,message){var data=$.extend({},_.clone(this.data),preservedEventData);data['eventLabel']=message.data&&message.data.products&&message.data.products[0].title;this.push(data);},productClick:function(preservedEventData,message){var data=$.extend({},_.clone(this.data),preservedEventData);data['eventLabel']=message.data&&message.data.ctaText;this.push(data);},_extractMessage:function(event){if(!event.data){return;}
+try{var message=JSON.parse(event.data);}catch(error){return;}
+return message;},_extractEventName:function(message){return message.eventName?message.eventName:null;},push:function(data){window.dataLayer=window.dataLayer||[]
+window.dataLayer.push(data)},})})

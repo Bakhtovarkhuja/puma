@@ -1,0 +1,5 @@
+define(['jquery','ko','pageLoader'],function($,ko,pageLoader){'use strict'
+return{load:function(url,$el){pageLoader.showLoading($el)
+return $.get({url:url,cache:true}).always(function(){pageLoader.hideLoading($el)}).done(function(response){this.updateUrl(url)
+$(document).triggerHandler('catalog:appendProducts',response)}.bind(this)).fail(function(){})},updateUrl:function(url){if(!url){return}
+if('pushState'in history){history.replaceState('','',url)}}}})

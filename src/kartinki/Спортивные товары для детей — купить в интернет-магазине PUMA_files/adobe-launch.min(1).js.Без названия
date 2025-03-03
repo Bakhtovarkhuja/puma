@@ -1,0 +1,14 @@
+define(['uiComponent','uiRegistry','Magento_Customer/js/customer-data','jquery','mage/cookies'],function(Component,registry,customerData,$){'use strict'
+const ADD_TO_CART_COOKIE='adobe_add_to_cart'
+const REMOVE_FROM_CART_COOKIE='adobe_remove_from_cart'
+const INCREASE_PRODUCT_QTY_COOKIE='adobe_increase_product_qty'
+const DECREASE_FROM_CART_COOKIE='adobe_decrease_product_qty'
+return Component.extend({initialize:function(){this._super()
+const cart=customerData.get('cart')
+this.trackAssigned()
+this.onChange()
+cart.subscribe(this.onChange,this)},onChange:function(){let cookiesToCheck=[ADD_TO_CART_COOKIE,REMOVE_FROM_CART_COOKIE,INCREASE_PRODUCT_QTY_COOKIE,DECREASE_FROM_CART_COOKIE];cookiesToCheck.forEach(function(cookie){if($.mage.cookies.get(cookie)){this.push(cookie)}}.bind(this));},push:function(cookieName){const cookie=decodeURIComponent($.mage.cookies.get(cookieName))
+const eventData=JSON.parse(cookie)
+$.mage.cookies.clear(cookieName)
+window.pageDataTrack=window.pageDataTrack||[]
+window.pageDataTrack.push(eventData)},trackAssigned:function(){if(this.track){this.track.forEach(function(trackData){window.pageDataTrack.push(trackData);});}}})})
